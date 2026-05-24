@@ -63,7 +63,6 @@ DATABASES = {
             name=config("DB_NAME", default="salesdb"),
         ),
         conn_max_age=600,
-        ssl_require=config("DATABASE_SSL", default=False, cast=bool),
     )
 }
 
