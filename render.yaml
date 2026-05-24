@@ -9,7 +9,7 @@ services:
     name: sales-tracker-backend
     runtime: python
     rootDir: backend
-    buildCommand: "./build.sh"
+    buildCommand: "bash build.sh"
     startCommand: "gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --limit-request-field_size 16384 --limit-request-fields 200"
     plan: free
     envVars:
