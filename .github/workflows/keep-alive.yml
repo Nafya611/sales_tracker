@@ -1,0 +1,16 @@
+name: Keep Render Awake
+
+on:
+  schedule:
+    - cron: '*/14 * * * *'  # every 14 minutes
+  workflow_dispatch:         # allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend
+        run: |
+          curl -f -s https://sales-tracker-web-5m50.onrender.com/api/products/ \
+            -H "Authorization: Token placeholder" \
+            -o /dev/null -w "Status: %{http_code}\n" || true
