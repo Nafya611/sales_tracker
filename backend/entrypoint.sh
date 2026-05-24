@@ -40,5 +40,5 @@ if not User.objects.filter(username=username).exists():
     print(f'Superuser created: {username}')
 "
 
-PORT=\${PORT:-8000}
-exec gunicorn core.wsgi:application --bind 0.0.0.0:\$PORT --workers 2 --limit-request-field_size 16384 --limit-request-fields 200
+PORT=${PORT:-8000}
+exec gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --limit-request-field_size 16384 --limit-request-fields 200
