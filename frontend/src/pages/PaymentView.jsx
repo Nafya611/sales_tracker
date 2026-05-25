@@ -5,13 +5,15 @@ export default function PaymentView() {
   const [sales, setSales] = useState([]);
   const [selected, setSelected] = useState(new Set());
   const [loading, setLoading] = useState(false);
+  const [partialAmounts, setPartialAmounts] = useState({});
   const today = new Date();
   const isSaturday = today.getDay() === 6;
 
   async function load() {
-    const r = await api.get("/sales/", { params: { status: "unpaid" } });
+    const r = await api.get("/sales/", { params: { status: "unpaid,partial" } });
     setSales(r.data);
     setSelected(new Set());
+    setPartialAmounts({});
   }
 
   useEffect(() => {
@@ -34,11 +36,20 @@ export default function PaymentView() {
     }
   }
 
-  async function markOnePaid(id) {
+  async function markOnePaid(id, isPartial = false) {
     setLoading(true);
-    await api.post(`/sales/${id}/mark-paid/`);
-    await load();
+    try {
+      const payload = isPartial && partialAmounts[id] ? { amount: partialAmounts[id] } : {};
+      await api.post(`/sales/${id}/mark-paid/`, payload);
+      await load();
+    } catch (e) {
+      alert("Error saving payment");
+    }
     setLoading(false);
+  }
+
+  function handleAmountChange(id, val) {
+    setPartialAmounts((prev) => ({ ...prev, [id]: val }));
   }
 
   async function markSelectedPaid() {
@@ -51,12 +62,12 @@ export default function PaymentView() {
   }
 
   const totalUnpaid = sales.reduce(
-    (s, sale) => s + parseFloat(sale.total_amount),
+    (s, sale) => s + parseFloat(sale.balance_due),
     0,
   );
   const totalSelected = sales
     .filter((s) => selected.has(s.id))
-    .reduce((s, sale) => s + parseFloat(sale.total_amount), 0);
+    .reduce((s, sale) => s + parseFloat(sale.balance_due), 0);
 
   return (
     <div>
@@ -123,9 +134,10 @@ export default function PaymentView() {
               <th className="px-4 py-3 text-left">Customer</th>
               <th className="px-4 py-3 text-center">Items</th>
               <th className="px-4 py-3 text-right">Discount</th>
-              <th className="px-4 py-3 text-right">Total Due</th>
+              <th className="px-4 py-3 text-right">Total</th>
+              <th className="px-4 py-3 text-right">Balance Due</th>
               <th className="px-4 py-3 text-left">Sale Date</th>
-              <th className="px-4 py-3 text-right">Action</th>
+              <th className="px-4 py-3 text-right">Payment Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -164,20 +176,42 @@ export default function PaymentView() {
                     ? `-ETB ${s.discount_total}`
                     : "—"}
                 </td>
-                <td className="px-4 py-3 text-right font-mono font-bold text-gray-800">
+                <td className="px-4 py-3 text-right text-gray-500 font-mono">
                   ETB {s.total_amount}
+                </td>
+                <td className="px-4 py-3 text-right font-mono font-bold text-gray-800">
+                  ETB {s.balance_due}
                 </td>
                 <td className="px-4 py-3 text-gray-500">
                   {new Date(s.date_created).toLocaleDateString()}
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <button
-                    onClick={() => markOnePaid(s.id)}
-                    disabled={loading}
-                    className="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-xs font-medium hover:bg-green-200 disabled:opacity-50"
-                  >
-                    Mark Paid
-                  </button>
+                  <div className="flex items-center justify-end gap-2">
+                    <input
+                      type="number"
+                      max={s.balance_due}
+                      min="0"
+                      step="0.01"
+                      placeholder="Amount"
+                      value={partialAmounts[s.id] || ""}
+                      onChange={(e) => handleAmountChange(s.id, e.target.value)}
+                      className="w-20 border rounded px-2 py-1 text-xs outline-none"
+                    />
+                    <button
+                      onClick={() => markOnePaid(s.id, true)}
+                      disabled={loading || !partialAmounts[s.id] || parseFloat(partialAmounts[s.id]) <= 0}
+                      className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium hover:bg-blue-200 disabled:opacity-50"
+                    >
+                      Pay Amount
+                    </button>
+                    <button
+                      onClick={() => markOnePaid(s.id, false)}
+                      disabled={loading}
+                      className="bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-medium hover:bg-green-200 disabled:opacity-50"
+                    >
+                      Pay Full
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

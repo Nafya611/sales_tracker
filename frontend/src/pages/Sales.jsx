@@ -34,7 +34,7 @@ export default function Sales() {
       </div>
 
       <div className="mb-4 flex gap-2">
-        {["", "unpaid", "paid"].map((s) => (
+        {["", "unpaid", "partial", "paid"].map((s) => (
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
@@ -60,6 +60,7 @@ export default function Sales() {
               <th className="px-4 py-3 text-right">Subtotal</th>
               <th className="px-4 py-3 text-right">Discount</th>
               <th className="px-4 py-3 text-right">Total</th>
+              <th className="px-4 py-3 text-right">Balance</th>
               <th className="px-4 py-3 text-center">Status</th>
               <th className="px-4 py-3 text-left">Date</th>
               <th className="px-4 py-3 text-right">Actions</th>
@@ -96,11 +97,16 @@ export default function Sales() {
                 <td className="px-4 py-3 text-right font-mono font-semibold">
                   ETB {s.total_amount}
                 </td>
+                <td className="px-4 py-3 text-right font-mono text-gray-700">
+                  ETB {s.balance_due}
+                </td>
                 <td className="px-4 py-3 text-center">
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                       s.status === "paid"
                         ? "bg-green-100 text-green-700"
+                        : s.status === "partial"
+                        ? "bg-blue-100 text-blue-700"
                         : "bg-orange-100 text-orange-700"
                     }`}
                   >

@@ -47,18 +47,18 @@ def dashboard_stats(request):
 
     total_customers = Customer.objects.count()
     total_products = Product.objects.count()
-    unpaid_sales = Sale.objects.filter(status="unpaid")
-    unpaid_count = unpaid_sales.count()
-    unpaid_total = unpaid_sales.aggregate(t=Sum("total_amount"))["t"] or 0
-    paid_this_week = (
-        Sale.objects.filter(status="paid", paid_date__gte=week_start).aggregate(
-            t=Sum("total_amount")
-        )["t"]
-        or 0
-    )
-    total_revenue = (
-        Sale.objects.filter(status="paid").aggregate(t=Sum("total_amount"))["t"] or 0
-    )
+    
+    unpaid_sales_qs = Sale.objects.filter(status__in=["unpaid", "partial"])
+    unpaid_count = unpaid_sales_qs.count()
+    
+    # Python calculation to use balance_due which relies on total_amount and paid_amount
+    unpaid_total = sum(s.balance_due for s in unpaid_sales_qs)
+
+    paid_this_week_sales = Sale.objects.filter(paid_date__gte=week_start)
+    paid_this_week = sum(s.paid_amount for s in paid_this_week_sales)
+
+    # To accurately get total revenue collected, we just sum paid_amount on all sales
+    total_revenue = Sale.objects.aggregate(t=Sum("paid_amount"))["t"] or 0
     is_saturday = today.weekday() == 5
 
     return Response(
@@ -104,7 +104,8 @@ class SaleViewSet(viewsets.ModelViewSet):
         qs = Sale.objects.select_related("customer").prefetch_related("items__product")
         status_filter = self.request.query_params.get("status")
         if status_filter:
-            qs = qs.filter(status=status_filter)
+            statuses = [s.strip() for s in status_filter.split(',')]
+            qs = qs.filter(status__in=statuses)
         return qs
 
     def get_serializer_class(self):
@@ -119,9 +120,29 @@ class SaleViewSet(viewsets.ModelViewSet):
             return Response(
                 {"error": "Sale is already paid"}, status=status.HTTP_400_BAD_REQUEST
             )
-        sale.status = "paid"
-        sale.paid_date = timezone.now()
-        sale.save(update_fields=["status", "paid_date"])
+            
+        import decimal
+        try:
+            amount = request.data.get("amount")
+            if amount is not None:
+                amount = decimal.Decimal(str(amount))
+                if amount <= 0:
+                    raise ValueError
+        except:
+            return Response({"error": "Invalid amount"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if amount is not None:
+            sale.paid_amount += amount
+        else:
+            sale.paid_amount = sale.total_amount
+
+        if sale.paid_amount >= sale.total_amount:
+            sale.status = "paid"
+            sale.paid_date = timezone.now()
+        else:
+            sale.status = "partial"
+
+        sale.save(update_fields=["status", "paid_date", "paid_amount"])
         return Response(SaleSerializer(sale).data)
 
     @action(detail=False, methods=["post"], url_path="mark-all-paid")
@@ -132,7 +153,13 @@ class SaleViewSet(viewsets.ModelViewSet):
                 {"error": "No sale IDs provided"}, status=status.HTTP_400_BAD_REQUEST
             )
         now = timezone.now()
-        updated = Sale.objects.filter(id__in=ids, status="unpaid").update(
-            status="paid", paid_date=now
-        )
+        # For bulk actions, we'll mark the entire balance as paid. 
+        sales_to_update = Sale.objects.filter(id__in=ids).exclude(status="paid")
+        updated = 0
+        for sale in sales_to_update:
+            sale.paid_amount = sale.total_amount
+            sale.status = "paid"
+            sale.paid_date = now
+            sale.save(update_fields=["paid_amount", "status", "paid_date"])
+            updated += 1
         return Response({"updated": updated})

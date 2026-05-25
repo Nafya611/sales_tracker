@@ -33,9 +33,11 @@ class Customer(models.Model):
 
 class Sale(models.Model):
     STATUS_UNPAID = "unpaid"
+    STATUS_PARTIAL = "partial"
     STATUS_PAID = "paid"
     STATUS_CHOICES = [
         (STATUS_UNPAID, "Unpaid"),
+        (STATUS_PARTIAL, "Partial"),
         (STATUS_PAID, "Paid"),
     ]
 
@@ -62,9 +64,16 @@ class Sale(models.Model):
     total_amount = models.DecimalField(
         max_digits=12, decimal_places=2, default=Decimal("0.00")
     )
+    paid_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, default=Decimal("0.00")
+    )
     notes = models.TextField(blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     paid_date = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def balance_due(self):
+        return self.total_amount - self.paid_amount
 
     def recalculate_totals(self):
         items = self.items.all()
