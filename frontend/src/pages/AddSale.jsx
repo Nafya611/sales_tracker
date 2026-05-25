@@ -17,6 +17,7 @@ export default function AddSale() {
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
   const [customer, setCustomer] = useState("");
+  const [carId, setCarId] = useState("");
   const [notes, setNotes] = useState("");
   const [items, setItems] = useState([{ ...EMPTY_ITEM }]);
   const [saving, setSaving] = useState(false);
@@ -31,8 +32,7 @@ export default function AddSale() {
     );
     if (isEdit) {
       api.get(`/sales/ETB{id}/`).then((r) => {
-        setCustomer(String(r.data.customer));
-        setNotes(r.data.notes || "");
+        setCustomer(String(r.data.customer));        setCarId(r.data.car_id || "");        setNotes(r.data.notes || "");
         setItems(
           r.data.items.map((i) => ({
             product: String(i.product),
@@ -101,6 +101,7 @@ export default function AddSale() {
     setError("");
     const payload = {
       customer: parseInt(customer),
+      car_id: carId || null,
       notes,
       items: items.map((i) => ({
         product: parseInt(i.product),
@@ -130,10 +131,10 @@ export default function AddSale() {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
-        {/* Customer */}
+        {/* Customer & Details */}
         <div className="bg-white rounded-xl shadow p-5">
-          <h3 className="font-semibold text-gray-700 mb-3">Customer</h3>
-          <div className="grid grid-cols-2 gap-4">
+          <h3 className="font-semibold text-gray-700 mb-3">Customer & Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Customer *
@@ -151,6 +152,20 @@ export default function AddSale() {
                     {c.company ? ` — ETB{c.company}` : ""}
                   </option>
                 ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Car ID
+              </label>
+              <select
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={carId}
+                onChange={(e) => setCarId(e.target.value)}
+              >
+                <option value="">No Car (None)</option>
+                <option value="58371">58371</option>
+                <option value="A07731">A07731</option>
               </select>
             </div>
             <div>

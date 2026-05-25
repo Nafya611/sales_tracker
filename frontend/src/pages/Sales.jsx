@@ -55,6 +55,7 @@ export default function Sales() {
             <tr>
               <th className="px-4 py-3 text-left">#</th>
               <th className="px-4 py-3 text-left">Customer</th>
+              <th className="px-4 py-3 text-left">Car ID</th>
               <th className="px-4 py-3 text-center">Items</th>
               <th className="px-4 py-3 text-right">Subtotal</th>
               <th className="px-4 py-3 text-right">Discount</th>
@@ -77,6 +78,9 @@ export default function Sales() {
                 <td className="px-4 py-3 text-gray-400">#{s.id}</td>
                 <td className="px-4 py-3 font-medium text-gray-800">
                   {s.customer_name}
+                </td>
+                <td className="px-4 py-3 text-gray-500">
+                  {s.car_id ? s.car_id : "—"}
                 </td>
                 <td className="px-4 py-3 text-center text-gray-500">
                   {s.item_count}

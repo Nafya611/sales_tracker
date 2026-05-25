@@ -39,8 +39,16 @@ class Sale(models.Model):
         (STATUS_PAID, "Paid"),
     ]
 
+    CAR_CHOICES = [
+        ("58371", "58371"),
+        ("A07731", "A07731"),
+    ]
+
     customer = models.ForeignKey(
         Customer, on_delete=models.PROTECT, related_name="sales"
+    )
+    car_id = models.CharField(
+        max_length=20, choices=CAR_CHOICES, blank=True, null=True
     )
     status = models.CharField(
         max_length=10, choices=STATUS_CHOICES, default=STATUS_UNPAID
