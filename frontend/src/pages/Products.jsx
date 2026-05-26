@@ -97,9 +97,9 @@ export default function Products() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-x-auto w-full">
-        <table className="w-full text-sm min-w-[500px]">
-          <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
+      <div className="bg-white rounded-xl shadow w-full">
+        <table className="w-full text-sm block md:table">
+          <thead className="bg-gray-50 text-gray-600 uppercase text-xs hidden md:table-header-group">
             <tr>
               <th className="px-4 py-3 text-left">Name</th>
               <th className="px-4 py-3 text-left">Description</th>
@@ -107,26 +107,29 @@ export default function Products() {
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="block md:table-row-group divide-y md:divide-gray-100">
             {products.length === 0 && (
-              <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-gray-400">
+              <tr className="block md:table-row">
+                <td colSpan={4} className="px-4 py-8 text-center text-gray-400 block md:table-cell">
                   No products yet
                 </td>
               </tr>
             )}
             {products.map((p) => (
-              <tr key={p.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium text-gray-800">
+              <tr key={p.id} className="block md:table-row border-b md:border-none pb-4 md:pb-0 hover:bg-gray-50">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-medium text-gray-800 bg-gray-50 md:bg-transparent">
+                  <span className="md:hidden font-semibold text-gray-600">Name</span>
                   {p.name}
                 </td>
-                <td className="px-4 py-3 text-gray-500">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500">
+                  <span className="md:hidden font-semibold text-gray-600">Description</span>
                   {p.description || "—"}
                 </td>
-                <td className="px-4 py-3 text-right font-mono">
-                  ${p.default_price}
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-mono md:text-right">
+                  <span className="md:hidden font-semibold text-gray-600">Price</span>
+                  ETB {p.default_price}
                 </td>
-                <td className="px-4 py-3 text-right space-x-2">
+                <td className="px-4 py-3 flex justify-end gap-3 md:table-cell md:text-right">
                   <button
                     onClick={() => openEdit(p)}
                     className="text-blue-600 hover:underline"
@@ -154,7 +157,7 @@ export default function Products() {
           <form onSubmit={handleSave} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name
+                Name <span className="text-red-500">*</span>
               </label>
               <input
                 className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -178,7 +181,7 @@ export default function Products() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Default Price ($)
+                Default Price <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"

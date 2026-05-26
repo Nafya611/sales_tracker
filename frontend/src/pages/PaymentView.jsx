@@ -143,9 +143,9 @@ export default function PaymentView() {
         )}
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-x-auto w-full">
-        <table className="w-full text-sm min-w-[900px]">
-          <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
+      <div className="bg-white rounded-xl shadow w-full">
+        <table className="w-full text-sm block md:table">
+          <thead className="bg-gray-50 text-gray-600 uppercase text-xs hidden md:table-header-group">
             <tr>
               <th className="px-4 py-3 text-center">
                 <input
@@ -157,21 +157,20 @@ export default function PaymentView() {
               </th>
               <th className="px-4 py-3 text-left">#</th>
               <th className="px-4 py-3 text-left">Customer</th>
+              <th className="px-4 py-3 text-left">Sale Date</th>
               <th className="px-4 py-3 text-center">Items</th>
-              <th className="px-4 py-3 text-right">Discount</th>
               <th className="px-4 py-3 text-right">Total</th>
               <th className="px-4 py-3 text-right">Paid Amount</th>
               <th className="px-4 py-3 text-right">Balance Due</th>
-              <th className="px-4 py-3 text-left">Sale Date</th>
               <th className="px-4 py-3 text-right">Payment Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="block md:table-row-group divide-y md:divide-gray-100">
             {filteredSales.length === 0 && (
-              <tr>
+              <tr className="block md:table-row">
                 <td
                   colSpan={10}
-                  className="px-4 py-10 text-center text-gray-400"
+                  className="px-4 py-10 text-center text-gray-400 block md:table-cell"
                 >
                   All payments are up to date!
                 </td>
@@ -180,9 +179,10 @@ export default function PaymentView() {
             {filteredSales.map((s) => (
               <tr
                 key={s.id}
-                className={`hover:bg-gray-50 ${selected.has(s.id) ? "bg-blue-50" : ""}`}
+                className={`block md:table-row pb-4 md:pb-0 hover:bg-gray-50 ${selected.has(s.id) ? "bg-blue-50" : ""}`}
               >
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-2 md:py-3 flex justify-between items-center md:table-cell border-b md:border-none md:text-center bg-gray-50 md:bg-transparent">
+                  <span className="md:hidden font-semibold text-gray-600">Select</span>
                   <input
                     type="checkbox"
                     checked={selected.has(s.id)}
@@ -190,32 +190,36 @@ export default function PaymentView() {
                     className="rounded"
                   />
                 </td>
-                <td className="px-4 py-3 text-gray-400">#{s.id}</td>
-                <td className="px-4 py-3 font-medium text-gray-800">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500">
+                  <span className="md:hidden font-semibold text-gray-600">ID</span>
+                  #{s.id}
+                </td>
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-medium text-gray-800">
+                  <span className="md:hidden font-semibold text-gray-600">Customer</span>
                   {s.customer_name}
                 </td>
-                <td className="px-4 py-3 text-center text-gray-500">
-                  {s.item_count}
-                </td>
-                <td className="px-4 py-3 text-right text-green-600 font-mono">
-                  {parseFloat(s.discount_total) > 0
-                    ? `-ETB ${s.discount_total}`
-                    : "—"}
-                </td>
-                <td className="px-4 py-3 text-right text-gray-500 font-mono">
-                  ETB {s.total_amount}
-                </td>
-                <td className="px-4 py-3 text-right text-teal-600 font-mono">
-                  {parseFloat(s.paid_amount) > 0 ? `ETB ${s.paid_amount}` : "—"}
-                </td>
-                <td className="px-4 py-3 text-right font-mono font-bold text-gray-800">
-                  ETB {s.balance_due}
-                </td>
-                <td className="px-4 py-3 text-gray-500">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500">
+                  <span className="md:hidden font-semibold text-gray-600">Date</span>
                   {new Date(s.date_created).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-3 text-right">
-                  <div className="flex items-center justify-end gap-2">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500 md:text-center">
+                  <span className="md:hidden font-semibold text-gray-600">Items</span>
+                  {s.item_count}
+                </td>
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500 font-mono md:text-right">
+                  <span className="md:hidden font-semibold text-gray-600">Total</span>
+                  ETB {s.total_amount}
+                </td>
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-teal-600 font-mono md:text-right">
+                  <span className="md:hidden font-semibold text-gray-600">Paid</span>
+                  {parseFloat(s.paid_amount) > 0 ? `ETB ${s.paid_amount}` : "—"}
+                </td>
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-mono font-bold text-orange-600 md:text-right">
+                  <span className="md:hidden font-semibold text-gray-600">Balance</span>
+                  ETB {s.balance_due}
+                </td>
+                <td className="px-4 py-3 flex flex-col sm:flex-row items-end sm:items-center justify-end gap-2 md:table-cell md:text-right">
+                  <div className="flex w-full sm:w-auto items-center justify-between sm:justify-end gap-2">
                     <input
                       type="number"
                       max={s.balance_due}
@@ -224,19 +228,19 @@ export default function PaymentView() {
                       placeholder="Amount"
                       value={partialAmounts[s.id] || ""}
                       onChange={(e) => handleAmountChange(s.id, e.target.value)}
-                      className="w-20 border rounded px-2 py-1 text-xs outline-none"
+                      className="w-24 border rounded px-2 py-1 text-xs outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <button
                       onClick={() => markOnePaid(s.id, true)}
                       disabled={loading || !partialAmounts[s.id] || parseFloat(partialAmounts[s.id]) <= 0}
-                      className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium hover:bg-blue-200 disabled:opacity-50"
+                      className="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-200 disabled:opacity-50"
                     >
                       Pay Amount
                     </button>
                     <button
                       onClick={() => markOnePaid(s.id, false)}
                       disabled={loading}
-                      className="bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-medium hover:bg-green-200 disabled:opacity-50"
+                      className="bg-green-100 text-green-700 px-3 py-1.5 rounded text-xs font-medium hover:bg-green-200 disabled:opacity-50"
                     >
                       Pay Full
                     </button>

@@ -133,9 +133,9 @@ export default function Customers() {
         </div>
       </form>
 
-      <div className="bg-white rounded-xl shadow overflow-x-auto w-full">
-        <table className="w-full text-sm min-w-[600px]">
-          <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
+      <div className="bg-white rounded-xl shadow w-full">
+        <table className="w-full text-sm block md:table">
+          <thead className="bg-gray-50 text-gray-600 uppercase text-xs hidden md:table-header-group">
             <tr>
               <th className="px-4 py-3 text-left">Name</th>
               <th className="px-4 py-3 text-left">Company</th>
@@ -144,23 +144,33 @@ export default function Customers() {
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="block md:table-row-group divide-y md:divide-gray-100">
             {customers.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
+              <tr className="block md:table-row">
+                <td colSpan={5} className="px-4 py-8 text-center text-gray-400 block md:table-cell">
                   No customers found
                 </td>
               </tr>
             )}
             {customers.map((c) => (
-              <tr key={c.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium text-gray-800">
+              <tr key={c.id} className="block md:table-row border-b md:border-none pb-4 md:pb-0 hover:bg-gray-50">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-medium text-gray-800 bg-gray-50 md:bg-transparent">
+                  <span className="md:hidden font-semibold text-gray-600">Name</span>
                   {c.name}
                 </td>
-                <td className="px-4 py-3 text-gray-500">{c.company || "—"}</td>
-                <td className="px-4 py-3 text-gray-500">{c.email || "—"}</td>
-                <td className="px-4 py-3 text-gray-500">{c.phone || "—"}</td>
-                <td className="px-4 py-3 text-right space-x-2">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500">
+                  <span className="md:hidden font-semibold text-gray-600">Company</span>
+                  {c.company || "—"}
+                </td>
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500">
+                  <span className="md:hidden font-semibold text-gray-600">Email</span>
+                  {c.email || "—"}
+                </td>
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500">
+                  <span className="md:hidden font-semibold text-gray-600">Phone</span>
+                  {c.phone || "—"}
+                </td>
+                <td className="px-4 py-3 flex justify-end gap-3 md:table-cell md:text-right">
                   <button
                     onClick={() => openEdit(c)}
                     className="text-blue-600 hover:underline"
@@ -194,7 +204,7 @@ export default function Customers() {
             ].map(([field, label, req]) => (
               <div key={field}>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {label}
+                  {label} {req && <span className="text-red-500">*</span>}
                 </label>
                 <input
                   type={field === "email" ? "email" : "text"}

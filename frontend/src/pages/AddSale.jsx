@@ -185,13 +185,13 @@ export default function AddSale() {
         </div>
 
         {/* Items */}
-        <div className="bg-white rounded-xl shadow p-5 overflow-x-auto">
+        <div className="bg-white rounded-xl shadow p-5">
           <h3 className="font-semibold text-gray-700 mb-3 block sticky left-0">Products</h3>
-          <div className="space-y-3 min-w-[700px]">
-            <div className="grid grid-cols-12 gap-2 text-xs font-medium text-gray-500 uppercase px-1">
-              <div className="col-span-4">Product</div>
-              <div className="col-span-2 text-right">Unit Price (ETB)</div>
-              <div className="col-span-1 text-center">Qty</div>
+          <div className="space-y-3">
+            <div className="hidden md:grid grid-cols-12 gap-2 text-xs font-medium text-gray-500 uppercase px-1">
+              <div className="col-span-4">Product <span className="text-red-500">*</span></div>
+              <div className="col-span-2 text-right">Price <span className="text-red-500">*</span></div>
+              <div className="col-span-1 text-center">Qty <span className="text-red-500">*</span></div>
               <div className="col-span-2 text-center">Discount %</div>
               <div className="col-span-2 text-right">Line Total</div>
               <div className="col-span-1"></div>
@@ -200,8 +200,9 @@ export default function AddSale() {
             {items.map((item, idx) => {
               const row = rows[idx];
               return (
-                <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                  <div className="col-span-4">
+                <div key={idx} className="flex flex-col md:grid md:grid-cols-12 gap-2 md:items-center bg-gray-50 p-3 md:p-0 md:bg-transparent rounded-lg border border-gray-200 md:border-none">
+                  <div className="w-full md:col-span-4">
+                    <span className="text-xs font-semibold text-gray-600 md:hidden mb-1 block">Product <span className="text-red-500">*</span></span>
                     <select
                       className="w-full border rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                       value={item.product}
@@ -216,62 +217,72 @@ export default function AddSale() {
                       ))}
                     </select>
                   </div>
-                  <div className="col-span-2">
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      className="w-full border rounded-lg px-2 py-1.5 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={item.unit_price}
-                      onChange={(e) =>
-                        updateItem(idx, "unit_price", e.target.value)
-                      }
-                      required
-                    />
+                  <div className="grid grid-cols-2 gap-2 md:contents">
+                    <div className="md:col-span-2">
+                      <span className="text-xs font-semibold text-gray-600 md:hidden mb-1 block">Price <span className="text-red-500">*</span></span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        className="w-full border rounded-lg px-2 py-1.5 text-sm md:text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={item.unit_price}
+                        onChange={(e) =>
+                          updateItem(idx, "unit_price", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-1">
+                      <span className="text-xs font-semibold text-gray-600 md:hidden mb-1 block">Qty <span className="text-red-500">*</span></span>
+                      <input
+                        type="number"
+                        min="1"
+                        className="w-full border rounded-lg px-2 py-1.5 text-sm md:text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          updateItem(idx, "quantity", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
                   </div>
-                  <div className="col-span-1">
-                    <input
-                      type="number"
-                      min="1"
-                      className="w-full border rounded-lg px-2 py-1.5 text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        updateItem(idx, "quantity", e.target.value)
-                      }
-                      required
-                    />
+                  <div className="grid grid-cols-2 gap-2 md:contents items-end">
+                    <div className="md:col-span-2">
+                      <span className="text-xs font-semibold text-gray-600 md:hidden mb-1 block">Discount %</span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="0.01"
+                        className="w-full border rounded-lg px-2 py-1.5 text-sm md:text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={item.discount_percent}
+                        onChange={(e) =>
+                          updateItem(idx, "discount_percent", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="md:col-span-2 text-right md:text-right font-mono text-sm font-medium text-gray-700 flex flex-col justify-end">
+                      <span className="text-xs font-semibold text-gray-600 md:hidden mb-1 block text-right">Line Total</span>
+                      <div className="flex flex-col items-end justify-end h-full min-h-[32px]">
+                        ETB {row.lineTotal.toFixed(2)}
+                        {row.discount > 0 && (
+                          <span className="block text-[10px] text-green-600 leading-tight">
+                            -ETB {row.discount.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="col-span-2">
-                    <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="0.01"
-                      className="w-full border rounded-lg px-2 py-1.5 text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={item.discount_percent}
-                      onChange={(e) =>
-                        updateItem(idx, "discount_percent", e.target.value)
-                      }
-                    />
-                  </div>
-                  <div className="col-span-2 text-right font-mono text-sm font-medium text-gray-700">
-                    ETB {row.lineTotal.toFixed(2)}
-                    {row.discount > 0 && (
-                      <span className="block text-xs text-green-600">
-                        -ETB {row.discount.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-                  <div className="col-span-1 text-center">
-                    {items.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeRow(idx)}
-                        className="text-red-400 hover:text-red-600 text-lg leading-none"
-                      >
-                        &times;
-                      </button>
-                    )}
+                  <div className="md:col-span-1 flex justify-end mt-2 md:mt-0">
+                    <button
+                      type="button"
+                      onClick={() => removeRow(idx)}
+                      disabled={items.length === 1}
+                      className="text-red-500 hover:text-red-700 disabled:opacity-30 p-2 border border-red-200 rounded md:border-none md:p-0 w-full md:w-auto"
+                    >
+                      <span className="md:hidden font-medium text-sm">Remove Item</span>
+                      <span className="hidden md:inline text-lg leading-none">&times;</span>
+                    </button>
                   </div>
                 </div>
               );

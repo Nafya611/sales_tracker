@@ -49,9 +49,9 @@ export default function Sales() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-x-auto w-full">
-        <table className="w-full text-sm min-w-[800px]">
-          <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
+      <div className="bg-white rounded-xl shadow w-full">
+        <table className="w-full text-sm block md:table">
+          <thead className="bg-gray-50 text-gray-600 uppercase text-xs hidden md:table-header-group">
             <tr>
               <th className="px-4 py-3 text-left">#</th>
               <th className="px-4 py-3 text-left">Customer</th>
@@ -66,41 +66,52 @@ export default function Sales() {
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="block md:table-row-group divide-y md:divide-gray-100">
             {sales.length === 0 && (
-              <tr>
-                <td colSpan={9} className="px-4 py-8 text-center text-gray-400">
+              <tr className="block md:table-row">
+                <td colSpan={11} className="px-4 py-8 text-center text-gray-400 block md:table-cell">
                   No sales found
                 </td>
               </tr>
             )}
             {sales.map((s) => (
-              <tr key={s.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-gray-400">#{s.id}</td>
-                <td className="px-4 py-3 font-medium text-gray-800">
+              <tr key={s.id} className="block md:table-row border-b md:border-none pb-4 md:pb-0 hover:bg-gray-50">
+                <td className="px-4 py-2 md:py-3 flex justify-between items-center md:table-cell border-b md:border-none text-gray-500 bg-gray-50 md:bg-transparent">
+                  <span className="md:hidden font-semibold text-gray-600">ID</span>
+                  #{s.id}
+                </td>
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-medium text-gray-800">
+                  <span className="md:hidden font-semibold text-gray-600">Customer</span>
                   {s.customer_name}
                 </td>
-                <td className="px-4 py-3 text-gray-500">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500">
+                  <span className="md:hidden font-semibold text-gray-600">Car ID</span>
                   {s.car_id ? s.car_id : "—"}
                 </td>
-                <td className="px-4 py-3 text-center text-gray-500">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500 md:text-center">
+                  <span className="md:hidden font-semibold text-gray-600">Items</span>
                   {s.item_count}
                 </td>
-                <td className="px-4 py-3 text-right font-mono text-gray-500">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-mono text-gray-500 md:text-right">
+                  <span className="md:hidden font-semibold text-gray-600">Subtotal</span>
                   ETB {s.subtotal}
                 </td>
-                <td className="px-4 py-3 text-right font-mono text-green-600">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-mono text-green-600 md:text-right">
+                  <span className="md:hidden font-semibold text-gray-600">Discount</span>
                   {parseFloat(s.discount_total) > 0
                     ? `-ETB ${s.discount_total}`
                     : "—"}
                 </td>
-                <td className="px-4 py-3 text-right font-mono font-semibold">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-mono font-semibold md:text-right">
+                  <span className="md:hidden font-semibold text-gray-600">Total</span>
                   ETB {s.total_amount}
                 </td>
-                <td className="px-4 py-3 text-right font-mono text-gray-700">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-mono text-gray-700 md:text-right">
+                  <span className="md:hidden font-semibold text-gray-600">Balance</span>
                   ETB {s.balance_due}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-2 md:py-3 flex justify-between items-center md:table-cell border-b md:border-none md:text-center">
+                  <span className="md:hidden font-semibold text-gray-600">Status</span>
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                       s.status === "paid"
@@ -113,10 +124,11 @@ export default function Sales() {
                     {s.status}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-gray-500">
+                <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none text-gray-500">
+                  <span className="md:hidden font-semibold text-gray-600">Date</span>
                   {new Date(s.date_created).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-3 text-right space-x-2">
+                <td className="px-4 py-3 flex justify-end items-center gap-2 md:table-cell md:text-right">
                   <Link
                     to={`/sales/${s.id}/edit`}
                     className="text-blue-600 hover:underline"
