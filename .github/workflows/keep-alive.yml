@@ -13,4 +13,4 @@ jobs:
         run: |
           curl -f -s https://sales-tracker-web-5m50.onrender.com/api/products/ \
             -H "Authorization: Token placeholder" \
-            -o /dev/null -w "Status: %{http_code}\n" || true
+            -o /dev/null -w "Status: %{http_code}\n"
