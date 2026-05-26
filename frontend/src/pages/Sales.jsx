@@ -33,7 +33,7 @@ export default function Sales() {
         </Link>
       </div>
 
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         {["", "unpaid", "partial", "paid"].map((s) => (
           <button
             key={s}
@@ -49,8 +49,8 @@ export default function Sales() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl shadow overflow-x-auto w-full">
+        <table className="w-full text-sm min-w-[800px]">
           <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
             <tr>
               <th className="px-4 py-3 text-left">#</th>

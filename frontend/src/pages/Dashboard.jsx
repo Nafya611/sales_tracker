@@ -47,7 +47,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard
           label="Unpaid Sales"
           value={stats.unpaid_count}
@@ -62,7 +62,7 @@ export default function Dashboard() {
         <StatCard label="Customers" value={stats.total_customers} />
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-4">
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link
           to="/sales/new"
           className="bg-blue-600 text-white rounded-xl px-5 py-4 hover:bg-blue-700 transition-colors flex items-center gap-3"

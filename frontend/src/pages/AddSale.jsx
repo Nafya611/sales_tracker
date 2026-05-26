@@ -31,8 +31,10 @@ export default function AddSale() {
       },
     );
     if (isEdit) {
-      api.get(`/sales/ETB{id}/`).then((r) => {
-        setCustomer(String(r.data.customer));        setCarId(r.data.car_id || "");        setNotes(r.data.notes || "");
+      api.get(`/sales/${id}/`).then((r) => {
+        setCustomer(String(r.data.customer));
+        setCarId(r.data.car_id || "");
+        setNotes(r.data.notes || "");
         setItems(
           r.data.items.map((i) => ({
             product: String(i.product),
@@ -112,7 +114,7 @@ export default function AddSale() {
     };
     try {
       if (isEdit) {
-        await api.put(`/sales/ETB{id}/`, payload);
+        await api.put(`/sales/${id}/`, payload);
       } else {
         await api.post("/sales/", payload);
       }
@@ -149,7 +151,7 @@ export default function AddSale() {
                 {customers.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
-                    {c.company ? ` — ETB{c.company}` : ""}
+                    {c.company ? ` — ${c.company}` : ""}
                   </option>
                 ))}
               </select>
@@ -183,9 +185,9 @@ export default function AddSale() {
         </div>
 
         {/* Items */}
-        <div className="bg-white rounded-xl shadow p-5">
-          <h3 className="font-semibold text-gray-700 mb-3">Products</h3>
-          <div className="space-y-3">
+        <div className="bg-white rounded-xl shadow p-5 overflow-x-auto">
+          <h3 className="font-semibold text-gray-700 mb-3 block sticky left-0">Products</h3>
+          <div className="space-y-3 min-w-[700px]">
             <div className="grid grid-cols-12 gap-2 text-xs font-medium text-gray-500 uppercase px-1">
               <div className="col-span-4">Product</div>
               <div className="col-span-2 text-right">Unit Price (ETB)</div>

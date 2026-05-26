@@ -104,35 +104,37 @@ export default function Customers() {
         </button>
       </div>
 
-      <form onSubmit={handleSearch} className="mb-4 flex gap-2">
+      <form onSubmit={handleSearch} className="mb-4 flex flex-wrap gap-2">
         <input
-          className="border rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded-lg px-3 py-2 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Search name, email, company..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button
-          type="submit"
-          className="px-4 py-2 bg-gray-200 rounded-lg text-sm hover:bg-gray-300"
-        >
-          Search
-        </button>
-        {search && (
+        <div className="flex gap-2 w-full sm:w-auto">
           <button
-            type="button"
-            onClick={() => {
-              setSearch("");
-              load("");
-            }}
-            className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700"
+            type="submit"
+            className="px-4 py-2 bg-gray-200 rounded-lg text-sm hover:bg-gray-300 w-full sm:w-auto"
           >
-            Clear
+            Search
           </button>
-        )}
+          {search && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearch("");
+                load("");
+              }}
+              className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 w-full sm:w-auto"
+            >
+              Clear
+            </button>
+          )}
+        </div>
       </form>
 
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl shadow overflow-x-auto w-full">
+        <table className="w-full text-sm min-w-[600px]">
           <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
             <tr>
               <th className="px-4 py-3 text-left">Name</th>

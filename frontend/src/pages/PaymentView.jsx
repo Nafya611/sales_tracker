@@ -88,19 +88,19 @@ export default function PaymentView() {
       )}
 
       {/* Summary bar */}
-      <div className="flex items-center gap-6 mb-4">
-        <div className="bg-white rounded-xl shadow px-5 py-3">
+      <div className="flex flex-wrap items-center gap-4 mb-4">
+        <div className="bg-white rounded-xl shadow px-5 py-3 flex-1 min-w-[140px]">
           <p className="text-xs text-gray-500">Unpaid Sales</p>
           <p className="text-xl font-bold text-orange-600">{sales.length}</p>
         </div>
-        <div className="bg-white rounded-xl shadow px-5 py-3">
+        <div className="bg-white rounded-xl shadow px-5 py-3 flex-1 min-w-[140px]">
           <p className="text-xs text-gray-500">Total Outstanding</p>
           <p className="text-xl font-bold text-gray-800">
             ETB {totalUnpaid.toFixed(2)}
           </p>
         </div>
         {selected.size > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl px-5 py-3">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl px-5 py-3 flex-1 min-w-[140px]">
             <p className="text-xs text-blue-500">{selected.size} selected</p>
             <p className="text-xl font-bold text-blue-700">
               ETB {totalSelected.toFixed(2)}
@@ -111,15 +111,15 @@ export default function PaymentView() {
           <button
             onClick={markSelectedPaid}
             disabled={loading}
-            className="ml-auto bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50"
+            className="md:ml-auto w-full md:w-auto bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50"
           >
             Mark {selected.size} as Paid
           </button>
         )}
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl shadow overflow-x-auto w-full">
+        <table className="w-full text-sm min-w-[900px]">
           <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
             <tr>
               <th className="px-4 py-3 text-center">
