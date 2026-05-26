@@ -66,7 +66,7 @@ export default function PaymentView() {
     new Map(sales.map(s => [s.customer, s.customer_name])).entries()
   ).map(([id, name]) => ({ id, name }));
 
-  const filteredSales = sales.filter((s) => 
+  const filteredSales = sales.filter((s) =>
     customerFilter ? String(s.customer) === customerFilter : true
   );
 
@@ -98,11 +98,11 @@ export default function PaymentView() {
 
       {/* Summary bar */}
       <div className="flex flex-wrap items-center gap-4 mb-4">
-        
+
         {/* Customer Filter */}
         <div className="bg-white rounded-xl shadow px-5 py-3 w-full sm:w-auto">
           <p className="text-xs text-gray-500 mb-1">Filter by Customer</p>
-          <select 
+          <select
             className="w-full sm:w-48 border rounded-lg px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-500"
             value={customerFilter}
             onChange={(e) => setCustomerFilter(e.target.value)}
@@ -143,7 +143,7 @@ export default function PaymentView() {
         )}
       </div>
 
-      <div className="bg-white rounded-xl shadow w-full">
+      <div className="bg-transparent md:bg-white md:rounded-xl md:shadow w-full">
         <table className="w-full text-sm block md:table">
           <thead className="bg-gray-50 text-gray-600 uppercase text-xs hidden md:table-header-group">
             <tr>
@@ -165,12 +165,12 @@ export default function PaymentView() {
               <th className="px-4 py-3 text-right">Payment Action</th>
             </tr>
           </thead>
-          <tbody className="block md:table-row-group divide-y md:divide-gray-100">
+          <tbody className="block md:table-row-group md:divide-y md:divide-gray-100 space-y-4 md:space-y-0">
             {filteredSales.length === 0 && (
-              <tr className="block md:table-row">
+              <tr className="block md:table-row bg-white rounded-xl shadow-sm md:shadow-none md:rounded-none md:bg-transparent">
                 <td
                   colSpan={10}
-                  className="px-4 py-10 text-center text-gray-400 block md:table-cell"
+                  className="px-4 py-10 text-center text-gray-400 block md:table-cell rounded-xl md:rounded-none"
                 >
                   All payments are up to date!
                 </td>
@@ -179,7 +179,7 @@ export default function PaymentView() {
             {filteredSales.map((s) => (
               <tr
                 key={s.id}
-                className={`block md:table-row pb-4 md:pb-0 hover:bg-gray-50 ${selected.has(s.id) ? "bg-blue-50" : ""}`}
+                className={`block md:table-row bg-white rounded-xl shadow-sm border border-gray-200 md:border-none md:shadow-none md:rounded-none md:bg-transparent overflow-hidden pb-0 hover:bg-gray-50 ${selected.has(s.id) ? "md:bg-blue-50 bg-blue-50" : ""}`}
               >
                 <td className="px-4 py-2 md:py-3 flex justify-between items-center md:table-cell border-b md:border-none md:text-center bg-gray-50 md:bg-transparent">
                   <span className="md:hidden font-semibold text-gray-600">Select</span>

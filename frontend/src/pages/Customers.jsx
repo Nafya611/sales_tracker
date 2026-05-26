@@ -133,7 +133,7 @@ export default function Customers() {
         </div>
       </form>
 
-      <div className="bg-white rounded-xl shadow w-full">
+      <div className="bg-transparent md:bg-white md:rounded-xl md:shadow w-full">
         <table className="w-full text-sm block md:table">
           <thead className="bg-gray-50 text-gray-600 uppercase text-xs hidden md:table-header-group">
             <tr>
@@ -144,16 +144,16 @@ export default function Customers() {
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="block md:table-row-group divide-y md:divide-gray-100">
+          <tbody className="block md:table-row-group md:divide-y md:divide-gray-100 space-y-4 md:space-y-0">
             {customers.length === 0 && (
-              <tr className="block md:table-row">
-                <td colSpan={5} className="px-4 py-8 text-center text-gray-400 block md:table-cell">
+              <tr className="block md:table-row bg-white rounded-xl shadow-sm md:shadow-none md:rounded-none md:bg-transparent">
+                <td colSpan={5} className="px-4 py-8 text-center text-gray-400 block md:table-cell rounded-xl md:rounded-none">
                   No customers found
                 </td>
               </tr>
             )}
             {customers.map((c) => (
-              <tr key={c.id} className="block md:table-row border-b md:border-none pb-4 md:pb-0 hover:bg-gray-50">
+              <tr key={c.id} className="block md:table-row bg-white rounded-xl shadow-sm border border-gray-200 md:border-none md:shadow-none md:rounded-none md:bg-transparent overflow-hidden pb-0 hover:bg-gray-50">
                 <td className="px-4 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none font-medium text-gray-800 bg-gray-50 md:bg-transparent">
                   <span className="md:hidden font-semibold text-gray-600">Name</span>
                   {c.name}
