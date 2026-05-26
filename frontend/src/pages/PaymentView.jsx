@@ -6,6 +6,7 @@ export default function PaymentView() {
   const [selected, setSelected] = useState(new Set());
   const [loading, setLoading] = useState(false);
   const [partialAmounts, setPartialAmounts] = useState({});
+  const [customerFilter, setCustomerFilter] = useState("");
   const today = new Date();
   const isSaturday = today.getDay() === 6;
 
@@ -29,10 +30,10 @@ export default function PaymentView() {
   }
 
   function toggleAll() {
-    if (selected.size === sales.length) {
+    if (selected.size === filteredSales.length) {
       setSelected(new Set());
     } else {
-      setSelected(new Set(sales.map((s) => s.id)));
+      setSelected(new Set(filteredSales.map((s) => s.id)));
     }
   }
 
@@ -61,11 +62,19 @@ export default function PaymentView() {
     setLoading(false);
   }
 
-  const totalUnpaid = sales.reduce(
+  const uniqueCustomers = Array.from(
+    new Map(sales.map(s => [s.customer, s.customer_name])).entries()
+  ).map(([id, name]) => ({ id, name }));
+
+  const filteredSales = sales.filter((s) => 
+    customerFilter ? String(s.customer) === customerFilter : true
+  );
+
+  const totalUnpaid = filteredSales.reduce(
     (s, sale) => s + parseFloat(sale.balance_due),
     0,
   );
-  const totalSelected = sales
+  const totalSelected = filteredSales
     .filter((s) => selected.has(s.id))
     .reduce((s, sale) => s + parseFloat(sale.balance_due), 0);
 
@@ -89,9 +98,25 @@ export default function PaymentView() {
 
       {/* Summary bar */}
       <div className="flex flex-wrap items-center gap-4 mb-4">
+        
+        {/* Customer Filter */}
+        <div className="bg-white rounded-xl shadow px-5 py-3 w-full sm:w-auto">
+          <p className="text-xs text-gray-500 mb-1">Filter by Customer</p>
+          <select 
+            className="w-full sm:w-48 border rounded-lg px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+            value={customerFilter}
+            onChange={(e) => setCustomerFilter(e.target.value)}
+          >
+            <option value="">All Customers</option>
+            {uniqueCustomers.map(c => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
+
         <div className="bg-white rounded-xl shadow px-5 py-3 flex-1 min-w-[140px]">
           <p className="text-xs text-gray-500">Unpaid Sales</p>
-          <p className="text-xl font-bold text-orange-600">{sales.length}</p>
+          <p className="text-xl font-bold text-orange-600">{filteredSales.length}</p>
         </div>
         <div className="bg-white rounded-xl shadow px-5 py-3 flex-1 min-w-[140px]">
           <p className="text-xs text-gray-500">Total Outstanding</p>
@@ -125,7 +150,7 @@ export default function PaymentView() {
               <th className="px-4 py-3 text-center">
                 <input
                   type="checkbox"
-                  checked={sales.length > 0 && selected.size === sales.length}
+                  checked={filteredSales.length > 0 && selected.size === filteredSales.length}
                   onChange={toggleAll}
                   className="rounded"
                 />
@@ -141,17 +166,17 @@ export default function PaymentView() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {sales.length === 0 && (
+            {filteredSales.length === 0 && (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={9}
                   className="px-4 py-10 text-center text-gray-400"
                 >
                   All payments are up to date!
                 </td>
               </tr>
             )}
-            {sales.map((s) => (
+            {filteredSales.map((s) => (
               <tr
                 key={s.id}
                 className={`hover:bg-gray-50 ${selected.has(s.id) ? "bg-blue-50" : ""}`}
