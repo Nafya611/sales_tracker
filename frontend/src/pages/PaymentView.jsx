@@ -160,6 +160,7 @@ export default function PaymentView() {
               <th className="px-4 py-3 text-center">Items</th>
               <th className="px-4 py-3 text-right">Discount</th>
               <th className="px-4 py-3 text-right">Total</th>
+              <th className="px-4 py-3 text-right">Paid Amount</th>
               <th className="px-4 py-3 text-right">Balance Due</th>
               <th className="px-4 py-3 text-left">Sale Date</th>
               <th className="px-4 py-3 text-right">Payment Action</th>
@@ -169,7 +170,7 @@ export default function PaymentView() {
             {filteredSales.length === 0 && (
               <tr>
                 <td
-                  colSpan={9}
+                  colSpan={10}
                   className="px-4 py-10 text-center text-gray-400"
                 >
                   All payments are up to date!
@@ -203,6 +204,9 @@ export default function PaymentView() {
                 </td>
                 <td className="px-4 py-3 text-right text-gray-500 font-mono">
                   ETB {s.total_amount}
+                </td>
+                <td className="px-4 py-3 text-right text-teal-600 font-mono">
+                  {parseFloat(s.paid_amount) > 0 ? `ETB ${s.paid_amount}` : "—"}
                 </td>
                 <td className="px-4 py-3 text-right font-mono font-bold text-gray-800">
                   ETB {s.balance_due}
